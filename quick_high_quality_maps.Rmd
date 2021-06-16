@@ -1,0 +1,58 @@
+---
+title: "Quick high quality maps with R"
+author: "Jan-Philipp Kolb"
+date: "16 6 2021"
+output: slidy_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## 
+
+- Quick
+- Easy to use
+
+## Geocoordinates
+
+```{r}
+library(tmaptools)
+```
+
+
+```{r}
+citation("tmaptools")
+```
+
+
+
+```{r}
+(gc_z <- geocode_OSM("Zürich"))
+```
+
+
+
+## Necessary packages
+
+```{r}
+library(osmplotr)
+library(tmap)
+```
+
+
+
+## Buildings within a bounding box
+
+```{r,cache=T}
+bbox <- get_bbox (c(8.4539 , 49.4805  , 8.4774 , 49.4943 ))
+dat_M <- extract_osm_objects (key = 'building', bbox = bbox)
+
+# save(dat_M,file="data/osm_mannheim.Rdata")
+
+png("maps/mapchallenge_day7_green.png")
+qtm(dat_M,fill=c("#CAFF70"),borders=c("#7FFF00"))
+dev.off()
+
+```
+
