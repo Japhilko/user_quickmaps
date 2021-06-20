@@ -44,15 +44,22 @@ library(tmap)
 
 ## Buildings within a bounding box
 
-```{r,cache=T}
+```{r,cache=T,eval=F}
 bbox <- get_bbox (c(8.4539 , 49.4805  , 8.4774 , 49.4943 ))
 dat_M <- extract_osm_objects (key = 'building', bbox = bbox)
-
-# save(dat_M,file="data/osm_mannheim.Rdata")
-
-png("maps/mapchallenge_day7_green.png")
-qtm(dat_M,fill=c("#CAFF70"),borders=c("#7FFF00"))
-dev.off()
-
 ```
 
+```{r,eval=F,echo=F}
+save(dat_M,file="data/osm_mannheim.Rdata")
+```
+
+```{r,echo=F}
+load("data/osm_mannheim.Rdata")
+```
+
+
+```{r}
+qtm(dat_M,fill=c("purple"),borders="black")
+```
+
+## Colorpicker
