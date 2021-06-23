@@ -1,21 +1,21 @@
 ---
 title: "Quick high quality maps with R"
 author: "Jan-Philipp Kolb"
-date: "16 6 2021"
+date: "23 6 2021"
 output: 
   beamer_presentation: 
-    theme: Antibes
-    colortheme: dove
+    theme: PaloAlto
+    colortheme: dolphin
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = T)
+knitr::opts_chunk$set(echo = T,warning=F)
 ```
 
 ## Preliminaries
 
 - Usually I have big differences in knowledge and abilities of the participants - please tell, if it is too fast or slow.
-- We have lots of hands-on coding [**exercises**](http://web.math.ku.dk/~helle/R-intro/exercises.pdf) - later you can only learn on your own
+- I have lots of hands-on coding [**exercises**](http://web.math.ku.dk/~helle/R-intro/exercises.pdf) - later you can only learn on your own
 - We have many [**examples**](https://www.showmeshiny.com/) - try them
 - If there are questions - always ask
 - R is more fun together  - strong proponent of
@@ -23,9 +23,10 @@ collaborative work!
 
 
 
-## What is the purpose of this course
+## Adjustments for online course
 
-- Quick
+- Quick 
+- One slide - one example - 
 - Easy to use
 
 
@@ -62,7 +63,7 @@ data(World)
 
 ### Fast thematic map
 
-- With the command [**qtm**](https://cran.r-project.org/web/packages/tmap/vignettes/tmap-nutshell.html) you can create a fast thematic map
+- With [**qtm**](https://cran.r-project.org/web/packages/tmap/vignettes/tmap-nutshell.html) you can create a fast thematic map
 
 - Example from the [**Vignette**](https://cran.r-project.org/web/packages/tmap/vignettes/tmap-nutshell.html) for the `tmap` package
 
@@ -75,7 +76,7 @@ qtm(World)
 
 ## To get more color in the map
 
-### economic development status
+### Economic development status
 
 <!--
 <http://www.naturalearthdata.com/>
