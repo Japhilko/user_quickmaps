@@ -9,7 +9,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = T,warning=F)
+knitr::opts_chunk$set(echo = T,warning=F,message=F)
 ```
 
 ## Preliminaries
@@ -96,12 +96,11 @@ qtm(World, fill="pop_est", text="iso_a3")
 
 ## This Scheme is better:
 
-### [**GDP**](https://en.wikipedia.org/wiki/Population_density)
+### [**GDP per capita**](https://en.wikipedia.org/wiki/Population_density)
 
 ```{r}
 qtm(World, fill="gdp_cap_est", text="iso_a3", 
-    text.size="AREA", root=5, fill.title="GDP per capita", 
-    fill.textNA="Non-European countries", theme="Europe")
+    text.size="AREA")
 ```
 
 
@@ -118,16 +117,15 @@ qtm(World, fill="gdp_cap_est", text="iso_a3",
 
 
 
-## The World Dataset - Variables and what's behind
 
 
-```{r,echo=F}
-library(XML)
-info <- colnames(World)
 
-info_df <- data.frame(World)
-knitr::kable(info_df[1:8,1:5])
-```
+
+### [**Variables of the World Dataset**](http://rpubs.com/Japhilko82/tmap_europe_dataset)
+
+![](pics/world_dataset.PNG)
+
+
 
 
 ## The variable `continent`
@@ -168,35 +166,7 @@ tm_shape(World) + tm_fill(c("pop_est", "economy"),
 ```
 
 
-<!--
-## A dataset about the provinces in the Netherlands (R-package `tmap`)
-
-```{r,echo=F,eval=F}
-data(NLD_prov)
-NLD_df <- NLD_prov@data
-NLD_df[,6] <- round(NLD_df[,6])
-
-datatable(NLD_df[,1:6], class = 'cell-border stripe',rownames = FALSE,
-          options = list(pageLength = 10, autoWidth = TRUE)
-          )
-```
-
-```{r,echo=F,eval=F}
-data(NLD_prov)
-NLD_df <- NLD_prov
-
-kable(head(NLD_df))
-        
-```
-
--->
-
 ## Netherlands - Population in the provinces
-
-```{r,eval=F}
-qtm(NLD_prov, fill="population",fill.title="population") 
-```
-
 
 ```{r dataland,echo=F,eval=F}
 data(land)
@@ -291,43 +261,6 @@ qtm(World,c("Val2007M12","Val2013M01"))
 ```
 
 
-## Exercise: Visualisation of Eurostat data
-
-### First part - plot a map
-
-- Download and import the data `unemprate_by_sex.csv` from ILIAS.
-- Link the data with map data .
-- Visualise the linked data in a map.
-
-### If you have that:
-
-- Search for example [**here**](https://ec.europa.eu/eurostat/web/euro-indicators) for datasets containing the country name and visualize the data with `tmap`.
-
-
-## The World-Dataset
-
-
-
-```{r,echo=F,eval=F}
-# http://rstudio.github.io/DT/
-datatable(World, class = 'cell-border stripe',rownames = FALSE,
-          options = list(pageLength = 10, autoWidth = TRUE)
-          )
-# to see the options http://datatables.net/reference/option/
-```
-
-### [**The World Dataset in Package `tmap`**](http://rpubs.com/Japhilko82/tmap_europe_dataset)
-<!--
-```{r,echo=F,eval=F}
-kable(Europe@data[1:10,1:4])
-```
--->
-
-![](pics/tmap_world.PNG)
-
-
-
-
 
 ## The package `tmaptools`
 
@@ -348,11 +281,11 @@ citation("tmaptools")
 
 
 
-## Necessary packages
+## A package to get Openstreetmap data
 
 ```{r}
 library(osmplotr)
-library(tmap)
+citation("osmplotr")
 ```
 
 
