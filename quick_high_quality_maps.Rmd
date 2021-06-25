@@ -52,6 +52,7 @@ vignette("data-maps")
 - Dataset contains information from [**Natural Earth**](http://www.naturalearthdata.com/)
 
 ```{r}
+library(tmap)
 data(World)
 ```
 
@@ -67,11 +68,13 @@ data(World)
 
 - Example from the [**Vignette**](https://cran.r-project.org/web/packages/tmap/vignettes/tmap-nutshell.html) for the `tmap` package
 
-```{r}
+```{r,eval=F}
 library(tmap)
 data(World)
 qtm(World)
 ```
+
+![](pics/qtm_world2.PNG){width=50%}
 
 
 ## To get more color in the map
@@ -206,6 +209,197 @@ tm_shape(World[World$name=="Austria", ]) +
 ```
 
 
+## The `raster` package
+
+
+
+## GADM data 
+
+```{r,eval=F}
+FRA4 <- raster::getData('GADM', country='FRA', 
+                        level=4)
+```
+
+```{r,eval=F,echo=F}
+save(FRA4,file="data/FRA4.RData")
+```
+
+
+## Plot the map
+
+```{r,eval=T,echo=F}
+load("data/FRA4.RData")
+```
+
+```{r}
+qtm(FRA4,fill="blue")
+```
+
+
+## Create colour gradiation
+
+```{r}
+FRA4$fantasy_val <- runif(nrow(FRA4))
+  qtm(FRA4,"fantasy_val", 
+      fill.palette = rgb(0,0,seq(0,1,.1),0),
+      borders = "blue")
+```
+
+
+
+
+```{r,echo=F,eval=F}
+FRA4$fantasy_val <- runif(nrow(FRA4))
+png("maps/map_challenge_day5.png")
+  qtm(FRA4,"fantasy_val", fill.palette = rgb(0,0,seq(0,1,.1),0),borders = "blue")
+dev.off()
+```
+
+
+
+
+## `tmaptools` - Thematic Map Tools 
+
+```{r}
+library(tmaptools)
+```
+
+Author: Martijn Tennekes
+
+```{r,eval=F}
+citation("tmaptools")
+```
+
+![](pics/description_tmaptools.PNG)
+
+## Geocoordinates
+
+```{r}
+(gc_z <- geocode_OSM("Zürich"))
+```
+
+
+
+## A package to get Openstreetmap data
+
+Author: Mark Padgham
+
+
+```{r}
+library(osmplotr)
+```
+
+```{r,eval=F}
+citation("osmplotr")
+```
+
+
+
+![](pics/osmplotr_google.png)
+
+## Buildings within a bounding box
+
+```{r,cache=T,eval=F}
+bbox <- get_bbox (c(8.4539 , 49.4805  , 
+                    8.4774 , 49.4943 ))
+dat_M <- extract_osm_objects (key = 'building', 
+                              bbox = bbox)
+```
+
+```{r,eval=F,echo=F}
+save(dat_M,file="data/osm_mannheim.Rdata")
+```
+
+```{r,echo=F}
+load("data/osm_mannheim.Rdata")
+```
+
+
+```{r,eval=F}
+qtm(dat_M,fill=c("purple"),borders="black")
+```
+
+![](pics/bui_mannheim.PNG){width=50%}
+
+## Colour picker
+
+![](pics/colourpicker.png)
+
+## The package `osmdata`
+
+```{r,eval=F}
+install.packages("osmdata")
+```
+
+```{r}
+library(osmdata)
+```
+
+
+### Get a bounding box for a city
+
+```{r}
+bbox <- getbb("Berlin")
+```
+
+
+## Streets of Berlin
+
+### OSM Map Feature key=highway value=primary
+
+![](pics/highway_primary_osmmapfeatures.PNG)
+
+
+```{r,echo=F}
+load("data/primary_highway_berlin.RData")
+```
+
+### Get data with package `osmdata`
+
+```{r,eval=F}
+dat <- extract_osm_objects(key = 'highway',
+                              value = "primary",
+                              bbox = bbox)
+```
+
+## A quick map for the primary streets in Berlin
+
+```{r}
+qtm(dat)
+```
+
+## 
+
+```{r,eval=F}
+dat_s <- extract_osm_objects(key = 'highway',
+                           value = "secondary",
+                           bbox = bbox)
+```
+
+```{r,echo=F}
+load("data//secondary_highway_berlin.RData")
+```
+
+
+
+```{r}
+map <- osm_basemap(bbox = bbox, bg = "#F5F5DC")
+map <- add_osm_objects(map, dat, col = "#00008B")
+map <- add_osm_objects(map, dat_s, col = "purple")
+print_osm_map(map)
+```
+
+
+## 30daymapchallenge
+
+![](pics/30daymapchallenge_copy_1jpg)
+
+
+## Day 9 monochrome
+
+![](pics/trier_monochrome.png)
+
+
 ## Load example data
 
 ### Data source Eurostat
@@ -260,62 +454,3 @@ World$Val2013M01 <- Unemp$Val2013M01[ind]
 qtm(World,c("Val2007M12","Val2013M01"))
 ```
 
-
-
-## The package `tmaptools`
-
-```{r}
-library(tmaptools)
-```
-
-
-```{r}
-citation("tmaptools")
-```
-
-## Geocoordinates
-
-```{r}
-(gc_z <- geocode_OSM("Zürich"))
-```
-
-
-
-## A package to get Openstreetmap data
-
-```{r}
-library(osmplotr)
-citation("osmplotr")
-```
-
-
-
-## Buildings within a bounding box
-
-```{r,cache=T,eval=F}
-bbox <- get_bbox (c(8.4539 , 49.4805  , 8.4774 , 49.4943 ))
-dat_M <- extract_osm_objects (key = 'building', bbox = bbox)
-```
-
-```{r,eval=F,echo=F}
-save(dat_M,file="data/osm_mannheim.Rdata")
-```
-
-```{r,echo=F}
-load("data/osm_mannheim.Rdata")
-```
-
-
-```{r}
-qtm(dat_M,fill=c("purple"),borders="black")
-```
-
-## Colour picker
-
-![](pics/colourpicker.png)
-
-
-
-
-
-## 30daymapchallenge
