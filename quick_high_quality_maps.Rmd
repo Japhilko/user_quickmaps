@@ -211,9 +211,36 @@ tm_shape(World[World$name=="Austria", ]) +
 
 ## The `raster` package
 
+Title: Geographic Data Analysis and Modeling
+
+Description: Reading, writing, manipulating, analyzing and modeling of spatial data. The package implements basic and high-level functions for raster data and for vector data operations such as intersections.
+
+Author: Robert J. Hijmans [cre, aut] (<https://orcid.org/0000-0001-5872-2872>),
+  Jacob van Etten [ctb],
+  Michael Sumner [ctb],
+  Joe Cheng [ctb],
+  Dan Baston [ctb],
+  Andrew Bevan [ctb],
+  Roger Bivand [ctb],
+  Lorenzo Busetto [ctb],
+  Mort Canty [ctb],
+  David Forrest [ctb],
+  Aniruddha Ghosh [ctb],
+  Duncan Golicher [ctb],
+  Josh Gray [ctb],
+  Jonathan A. Greenberg [ctb],
+  Paul Hiemstra [ctb],
+  Kassel Hingee [ctb],
+  Institute for Mathematics Applied Geosciences [cph],
+  Charles Karney [ctb],
+  Matteo Mattiuzzi [ctb],
+  Steven Mosher [ctb],
 
 
-## GADM data 
+## Global Administrative Boundaries
+
+
+### Get the data
 
 ```{r,eval=F}
 FRA4 <- raster::getData('GADM', country='FRA', 
@@ -223,6 +250,10 @@ FRA4 <- raster::getData('GADM', country='FRA',
 ```{r,eval=F,echo=F}
 save(FRA4,file="data/FRA4.RData")
 ```
+
+### [**Overview of the data**](https://rpubs.com/Jan-Philipp_Kolb/FRA4)
+
+![](pics/FRA4_data_rpubs.PNG)
 
 
 ## Plot the map
@@ -255,7 +286,9 @@ png("maps/map_challenge_day5.png")
 dev.off()
 ```
 
+## Longitude and Latitude
 
+![](pics/definition-of-latitude-longitude.PNG)
 
 
 ## `tmaptools` - Thematic Map Tools 
@@ -452,5 +485,12 @@ World$Val2013M01 <- Unemp$Val2013M01[ind]
 
 ```{r}
 qtm(World,c("Val2007M12","Val2013M01"))
+```
+
+
+##
+
+```{r}
+library("choroplethrMaps")
 ```
 
