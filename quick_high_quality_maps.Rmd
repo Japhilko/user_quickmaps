@@ -12,52 +12,10 @@ output:
 knitr::opts_chunk$set(echo = T,warning=F,message=F)
 ```
 
-## Preliminaries
 
-- Usually I have big differences in knowledge and abilities of the participants - please tell, if it is too fast or slow.
-- I have lots of hands-on coding [**exercises**](http://web.math.ku.dk/~helle/R-intro/exercises.pdf) - later you can only learn on your own
-- We have many [**examples**](https://www.showmeshiny.com/) - try them
-- If there are questions - always ask
-- R is more fun together  - strong proponent of
-collaborative work!
+## Motivation
 
-
-
-## Adjustments for online course
-
-- Quick 
-- One slide - one example - 
-- Easy to use
-
-
-
-
-## Getting help on packages
-
-```{r,eval=F}
-# provides details regarding contents of a package
-help(package = "osmplotr")
-# list vignettes available for a specific package
-vignette(package="osmplotr")
-# view specific vignette
-vignette("data-maps")
-```
-
-
-
-## The `World` dataset
-
-### Natural Earth
-
-- Dataset contains information from [**Natural Earth**](http://www.naturalearthdata.com/)
-
-```{r}
-library(tmap)
-data(World)
-```
-
-![](pics/NaturalEarthData.PNG)
-
+![](pics/monochrome_twitter.png)
 
 
 ## The `qtm` command from the `tmap` package
@@ -77,6 +35,8 @@ qtm(World)
 ![](pics/qtm_world2.PNG){width=50%}
 
 
+
+
 ## To get more color in the map
 
 ### Economic development status
@@ -85,6 +45,8 @@ qtm(World)
 <http://www.naturalearthdata.com/>
 -->
 ```{r}
+library(tmap)
+data(World)
 qtm(World, fill="economy")
 ```
 
@@ -169,72 +131,90 @@ tm_shape(World) + tm_fill(c("pop_est", "economy"),
 ```
 
 
-## Netherlands - Population in the provinces
 
-```{r dataland,echo=F,eval=F}
-data(land)
-info_df <- land@data[1:100,]
-datatable(info_df)
-```
+
+
+## The `World` dataset
+
+### Natural Earth
+
+- Dataset contains information from [**Natural Earth**](http://www.naturalearthdata.com/)
 
 ```{r}
-data(land)
+library(tmap)
 data(World)
 ```
 
-
-```{r,echo=F,eval=F}
-data(land)
-info_df <- land[sample(1:length(land),10,replace=T),]
-kable(info_df[,c(2,3)])
-```
-
-```{r,eval=F,echo=F}
-?land
-```
-
-
-
-```{r}
-tm_shape(land,  relative=FALSE) +
-    tm_raster("trees", title="prop. wooded area")
-```
+![](pics/NaturalEarthData.PNG)
 
 
 ## Visualize only one country
 
 ```{r}
-tm_shape(World[World$name=="Austria", ]) +
+tm_shape(World[World$name=="France", ]) +
     tm_polygons()
 ```
 
 
-## The `raster` package
+## Use another country
 
-Title: Geographic Data Analysis and Modeling
+```{r}
+tm_shape(World[World$name=="Netherlands", ]) +
+    tm_polygons()
+```
 
-Description: Reading, writing, manipulating, analyzing and modeling of spatial data. The package implements basic and high-level functions for raster data and for vector data operations such as intersections.
 
-Author: Robert J. Hijmans [cre, aut] (<https://orcid.org/0000-0001-5872-2872>),
-  Jacob van Etten [ctb],
-  Michael Sumner [ctb],
-  Joe Cheng [ctb],
-  Dan Baston [ctb],
-  Andrew Bevan [ctb],
-  Roger Bivand [ctb],
-  Lorenzo Busetto [ctb],
-  Mort Canty [ctb],
-  David Forrest [ctb],
-  Aniruddha Ghosh [ctb],
-  Duncan Golicher [ctb],
-  Josh Gray [ctb],
-  Jonathan A. Greenberg [ctb],
-  Paul Hiemstra [ctb],
-  Kassel Hingee [ctb],
-  Institute for Mathematics Applied Geosciences [cph],
-  Charles Karney [ctb],
-  Matteo Mattiuzzi [ctb],
-  Steven Mosher [ctb],
+
+## Eurostat Data
+
+
+
+```{r}
+library(dplyr)
+library(ggplot2)
+```
+
+
+### Tools for Eurostat Open Data
+
+```{r}
+library(eurostat)
+```
+
+
+```{r,eval=F}
+df60 <- get_eurostat_geospatial(resolution = 60)
+```
+
+
+```{r,echo=F}
+load("data/eurostat_df60.RData")
+```
+
+
+
+## NUTS2 of the Netherland
+
+```{r out.width = "50%"}
+CE.sf <- df60 %>%   
+  filter(LEVL_CODE == 2 & 
+  CNTR_CODE %in% c("NL")) %>% 
+  select(NUTS_ID) 
+plot(CE.sf,col=1:12)
+```
+
+- NUTS 3 is the limit
+
+## [An interactive map of the Netherlands](https://rstudio.github.io/leaflet/markers.html)
+
+```{r,eval=F}
+library(leaflet)
+leaflet(CE.sf) %>% 
+  addProviderTiles("CartoDB.Positron") %>% 
+  addPolygons(color = "green")
+```
+
+![](pics/leaflet_netherlands.PNG)
 
 
 ## Global Administrative Boundaries
@@ -253,7 +233,7 @@ save(FRA4,file="data/FRA4.RData")
 
 ### [**Overview of the data**](https://rpubs.com/Jan-Philipp_Kolb/FRA4)
 
-![](pics/FRA4_data_rpubs.PNG)
+![](pics/FRA4_data_rpubs.PNG){80%}
 
 
 ## Plot the map
@@ -267,9 +247,47 @@ qtm(FRA4,fill="blue")
 ```
 
 
+
+
+
+
+## `raster` - Geographic Data Analysis and Modeling
+
+![](pics/ecosia_raster.PNG)
+
+### Description: 
+Reading, writing, manipulating, analyzing and modeling of spatial data. The package implements basic and high-level functions for raster data and for vector data operations such as intersections.
+
+### Author and contributors: 
+Robert J. Hijmans [cre, aut],
+  Jacob van Etten [ctb],
+  Michael Sumner [ctb],
+  Joe Cheng [ctb],
+  Dan Baston [ctb],
+  Andrew Bevan [ctb],
+  Roger Bivand [ctb], and many more
+
+<!--
+  Lorenzo Busetto [ctb],
+  Mort Canty [ctb],
+  David Forrest [ctb],
+  Aniruddha Ghosh [ctb],
+  Duncan Golicher [ctb],
+  Josh Gray [ctb],
+  Jonathan A. Greenberg [ctb],
+  Paul Hiemstra [ctb],
+  Kassel Hingee [ctb],
+  Institute for Mathematics Applied Geosciences [cph],
+  Charles Karney [ctb],
+  Matteo Mattiuzzi [ctb],
+  Steven Mosher [ctb],
+-->
+
+
+
 ## Create colour gradiation
 
-```{r}
+```{r out.width = "80%"}
 FRA4$fantasy_val <- runif(nrow(FRA4))
   qtm(FRA4,"fantasy_val", 
       fill.palette = rgb(0,0,seq(0,1,.1),0),
@@ -288,7 +306,7 @@ dev.off()
 
 ## Longitude and Latitude
 
-![](pics/definition-of-latitude-longitude.PNG)
+![](pics/definition-of-latitude-longitude.jpg)
 
 
 ## `tmaptools` - Thematic Map Tools 
@@ -311,6 +329,11 @@ citation("tmaptools")
 (gc_z <- geocode_OSM("Zürich"))
 ```
 
+## Get more information 
+
+```{r}
+(gc_z <- geocode_OSM("Zürich",details = T))
+```
 
 
 ## A package to get Openstreetmap data
@@ -360,6 +383,8 @@ qtm(dat_M,fill=c("purple"),borders="black")
 
 ## The package `osmdata`
 
+### Install and load `osmdata`
+
 ```{r,eval=F}
 install.packages("osmdata")
 ```
@@ -401,7 +426,14 @@ dat <- extract_osm_objects(key = 'highway',
 qtm(dat)
 ```
 
-## 
+## Get data for secondary roads in Berlin
+
+### OSM map feature
+
+![](pics/secondary_highway_osm)
+
+
+### New Information - same bounding box
 
 ```{r,eval=F}
 dat_s <- extract_osm_objects(key = 'highway',
@@ -413,14 +445,16 @@ dat_s <- extract_osm_objects(key = 'highway',
 load("data//secondary_highway_berlin.RData")
 ```
 
+## Plot the map
 
-
-```{r}
+```{r,eval=F}
 map <- osm_basemap(bbox = bbox, bg = "#F5F5DC")
 map <- add_osm_objects(map, dat, col = "#00008B")
 map <- add_osm_objects(map, dat_s, col = "purple")
 print_osm_map(map)
 ```
+
+![](pics/streets_berlin.PNG){width=50%}
 
 
 ## 30daymapchallenge
@@ -488,9 +522,40 @@ qtm(World,c("Val2007M12","Val2013M01"))
 ```
 
 
-##
+## The package `choroplethrMaps`
 
 ```{r}
+library("choroplethr")
 library("choroplethrMaps")
+data(df_pop_state)
+state_choropleth(df_pop_state)
 ```
 
+## OSM Map features
+
+![](pics/osm_amenity_bar.PNG)
+
+## 
+
+```{r,eval=F}
+bars <- extract_osm_objects(key = 'amenity',
+                           #value = "bar",
+                           bbox = bbox)
+```
+
+
+## Resources
+
+- github repo on osmplotr at [**ropensci**](https://github.com/ropensci/osmplotr); 
+[Intro to the package](https://github.com/ropensci/osmplotr?utm_content=bufferd5ff1&utm_medium=social&utm_source=twitter.com&utm_campaign=buffer)
+
+- [#30daymapchallenge](https://tjukanov.org/30daymapchallenge)
+
+- [Spatial Data Science](https://rspatial.org/raster/index.html)
+
+
+
+
+## Further resources
+
+- [Tips for working with images in Rmd files](http://zevross.com/blog/2017/06/19/tips-and-tricks-for-working-with-images-and-figures-in-r-markdown-documents/)

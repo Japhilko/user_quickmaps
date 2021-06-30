@@ -1,0 +1,25 @@
+---
+title: "Misc"
+author: "Jan-Philipp Kolb"
+date: "24 6 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## To Do
+
+- Auf das Paket sf eingehen
+
+
+## [Tutorial](https://user2021.r-project.org/program/tutorials/)
+
+
+## Links
+
+https://geoobserver.wordpress.com/2020/11/06/taglich-soziales-kartierungsprojekt-30daymapchallenge/
+
+https://tjukanov.org/30daymapchallenge
+https://geoobserver.wordpress.com/2020/11/06/taglich-soziales-kartierungsprojekt-30daymapchallenge/

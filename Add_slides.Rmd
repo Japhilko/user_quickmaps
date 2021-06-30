@@ -1,0 +1,43 @@
+---
+title: "Misc"
+author: "Jan-Philipp Kolb"
+date: "26 6 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Preliminaries
+
+- Usually I have big differences in knowledge and abilities of the participants - please tell, if it is too fast or slow.
+- I have lots of hands-on coding [**exercises**](http://web.math.ku.dk/~helle/R-intro/exercises.pdf) - later you can only learn on your own
+- We have many [**examples**](https://www.showmeshiny.com/) - try them
+- If there are questions - always ask
+- R is more fun together  - strong proponent of
+collaborative work!
+
+
+## Adjustments for online course
+
+- Quick 
+- One slide - one example - 
+- Easy to use
+
+
+
+
+## Getting help on packages
+
+```{r,eval=F}
+# provides details regarding contents of a package
+help(package = "osmplotr")
+# list vignettes available for a specific package
+vignette(package="osmplotr")
+# view specific vignette
+vignette("data-maps")
+```
+
+
