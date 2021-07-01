@@ -1,0 +1,37 @@
+---
+title: "Instructions for tutorial"
+author: "Jan-Philipp Kolb"
+date: "1 7 2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Where you can find the material
+
+I have all the slides and the Rcode on the following github repo:
+
+https://github.com/Japhilko/user_quickmaps
+
+Example data can be downloaded here:
+
+https://github.com/Japhilko/user_quickmaps/data
+
+
+## Necessary packages
+
+I will use the following packages during the tutorial:
+
+```{r,eval=F}
+install.packages(c("sf","sp","tmap","osmdata","osmplotr","eurostat","tmaptools","choroplethr",
+                  "choroplethrMaps","ggplot2","dplyr","maps","raster","colorRamps",
+                  "colourpicker","rgdal","tidycensus","elevatr","COVID19",
+                  "giscoR","ggfortify","globe","WDI"))
+```
+
+
+
+
+

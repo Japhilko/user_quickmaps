@@ -7,3 +7,7 @@ osmplotr
 eurostat
 dplyr
 ggplot2
+maps
+sp
+maptools
+tidycensus

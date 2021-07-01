@@ -103,8 +103,54 @@ dat_NT <- extract_osm_objects (bbox = bbox, key = "natural", value = "!tree")
 save(dat_NT,file="data/berlin_natural.RData")
 
 
-pts_NT <- extract_osm_objects (bbox = bbox, key = "natural", value = "!tree",
+pts_NT <- extract_osm_objects (bbox = bbox, 
+                               key = "natural", 
+                               value = "!tree",
                                return_type = "points")
+
+
+plot(pts_NT)
+save(pts_NT,file="data/pts_NT")
+
+
+
+# The sf package ----------------------------------------------------------
+
+library(sf)
+
+nc <- st_read(system.file("shape/nc.shp", package="sf"))
+
+par(mar = c(0,0,1,0))
+plot(nc[1], reset = FALSE) # reset = FALSE: we want to add to a plot with a legend
+plot(nc[1,1], col = 'grey', add = TRUE)
+
+
+# The Eurostat data -------------------------------------------------------
+
+
+library(DT)
+
+DT::datatable(df60)
+
+
+
+# osmdata -----------------------------------------------------------------
+
+library(dplyr)
+library(osmplotr)
+library(osmdata)
+
+bbox <- osmdata::getbb("Zürich")
+
+dat1 <- osmplotr::extract_osm_objects (key = "highway", value = "!primary",
+                                       bbox = bbox)
+dat2 <- osmdata::opq (bbox = bbox) %>%
+  add_feature (key = "highway") %>%
+  add_feature (key = "highway", value = "!primary") %>%
+  osmdata_sf ()
+dat2 <- dat2$osm_lines
+
+
 
 # To Do
 
@@ -113,3 +159,12 @@ pts_NT <- extract_osm_objects (bbox = bbox, key = "natural", value = "!tree",
 
 
 # https://www.r-bloggers.com/2016/12/rwind-r-package-released/
+
+
+
+
+
+# 30 day map challenge ----------------------------------------------------
+
+
+# https://urbandatapalette.com/post/2020-12-summary-30-map-challenge/

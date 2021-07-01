@@ -1,7 +1,7 @@
 ---
 title: "Quick high quality maps with R"
 author: "Jan-Philipp Kolb"
-date: "23 6 2021"
+date: "July 7 2021"
 output: 
   beamer_presentation: 
     theme: PaloAlto
@@ -16,6 +16,58 @@ knitr::opts_chunk$set(echo = T,warning=F,message=F)
 ## Motivation
 
 ![](pics/monochrome_twitter.png)
+
+## About the tutorial
+
+- Four sections with each 20 min presentation and 10 minutes testing time for you
+
+### Sections
+
+1. Focus is on quick maps - I will present some classics 
+
+2. Simple Features in R - the new way to work with geodata in R
+
+3. OSM data in R 
+
+4. 
+
+
+
+## A classic - the `maps` package
+
+- maps package by Richard A. Becker, Allan R. Wilks and Ray Brownrigg
+
+```{r}
+library(maps)
+data(world.cities)
+map()
+map.cities(world.cities,col=rgb(0,0,1,.05),cex=2,pch=20)
+```
+
+
+## A second classic - `maptools` package
+
+```{r}
+library(maptools)
+data("wrld_simpl")
+plot(wrld_simpl,col="red")
+```
+
+
+## The `wrld_simpl` package
+
+```{r,eval=F}
+head(wrld_simpl@data)
+```
+
+
+![](pics/wrld_simpl.PNG)
+
+## The `sp` package
+
+```{r}
+sp::spplot(wrld_simpl,"AREA")
+```
 
 
 ## The `qtm` command from the `tmap` package
@@ -44,7 +96,7 @@ qtm(World)
 <!--
 <http://www.naturalearthdata.com/>
 -->
-```{r}
+```{r out.height = "80%"}
 library(tmap)
 data(World)
 qtm(World, fill="economy")
@@ -67,30 +119,6 @@ qtm(World, fill="pop_est", text="iso_a3")
 qtm(World, fill="gdp_cap_est", text="iso_a3", 
     text.size="AREA")
 ```
-
-
-## Topics of the World dataset
-
-### Available variables in the data set
-
-- [**ISO classification**](http://userpage.chemie.fu-berlin.de/diverse/doc/ISO_3166.html)
-- country name
-- Area, population, population density, 
-- [**Gross Domestic Product**](https://en.wikipedia.org/wiki/Gross_domestic_product)
-- Gross domestic product [**at purchasing power parities**](https://en.wikipedia.org/wiki/List_of_countries_by_GDP_%28PPP%29_per_capita)
-- Economy, income group
-
-
-
-
-
-
-
-### [**Variables of the World Dataset**](http://rpubs.com/Japhilko82/tmap_europe_dataset)
-
-![](pics/world_dataset.PNG)
-
-
 
 
 ## The variable `continent`
@@ -131,6 +159,12 @@ tm_shape(World) + tm_fill(c("pop_est", "economy"),
 ```
 
 
+## Population in Dutch municipalities
+
+```{r}
+data(NLD_muni)
+qtm(NLD_muni,"population")
+```
 
 
 
@@ -148,13 +182,59 @@ data(World)
 ![](pics/NaturalEarthData.PNG)
 
 
+## Topics of the World dataset
+
+### Available variables in the data set
+
+- [**ISO classification**](http://userpage.chemie.fu-berlin.de/diverse/doc/ISO_3166.html)
+- country name
+- Area, population, population density, 
+- [**Gross Domestic Product**](https://en.wikipedia.org/wiki/Gross_domestic_product)
+- Gross domestic product [**at purchasing power parities**](https://en.wikipedia.org/wiki/List_of_countries_by_GDP_%28PPP%29_per_capita)
+- Economy, income group
+
+
+### [**Variables of the World Dataset**](http://rpubs.com/Japhilko82/tmap_europe_dataset)
+
+![](pics/world_dataset.PNG)
+
+## [Simple Features](https://r-spatial.github.io/sf/)
+
+```{r}
+library(sf)
+```
+
+
+
+![](pics/sf_sticky_people.jpg)
+
+
+## Simple Features
+
+
+![](pics/sf.PNG){height=50%}
+
+```{r}
+class(World)
+```
+
+
+
+- [**Vignette of the `sf` package**](https://cran.r-project.org/web/packages/sf/vignettes/sf1.html)
+
+## Attribute values and an abridged version of the geometry
+
+![](pics/sf_exp.PNG)
+
+
+<!--
 ## Visualize only one country
 
 ```{r}
 tm_shape(World[World$name=="France", ]) +
     tm_polygons()
 ```
-
+-->
 
 ## Use another country
 
@@ -163,6 +243,9 @@ tm_shape(World[World$name=="Netherlands", ]) +
     tm_polygons()
 ```
 
+<!--
+You can see that the boundaries are greatly simplified.
+-->
 
 
 ## Eurostat Data
@@ -175,7 +258,7 @@ library(ggplot2)
 ```
 
 
-### Tools for Eurostat Open Data
+### [Tools for Eurostat Open Data](http://ropengov.github.io/eurostat/articles/website/eurostat_tutorial.html)
 
 ```{r}
 library(eurostat)
@@ -183,15 +266,46 @@ library(eurostat)
 
 
 ```{r,eval=F}
+# Download Geospatial Data from GISCO:
 df60 <- get_eurostat_geospatial(resolution = 60)
+# Same data - less detailed:
+df1 <- get_eurostat_geospatial(resolution = 1)
 ```
+
+```{r,eval=F,echo=F}
+save(df10,file="data/eurostat_df10.RData")
+save(df1,file="data/eurostat_df1.RData")
+```
+
 
 
 ```{r,echo=F}
 load("data/eurostat_df60.RData")
+load("data/eurostat_df10.RData")
+load("data/eurostat_df1.RData")
 ```
 
+### [The dataset](https://rpubs.com/Jan-Philipp_Kolb/eurostat_gisco)
 
+![](pics/eurostat_df60.PNG)
+
+
+## A more detailed map of the Netherlands 
+
+```{r}
+plot(df60[df60$LEVL_CODE == 0 & df60$CNTR_CODE == "NL",1])
+```
+
+<!--
+## 
+
+```{r}
+plot(df60[df60$LEVL_CODE == 0 & df60$CNTR_CODE == "NL",1],
+     col="blue",main="df60")
+plot(df1[df1$LEVL_CODE == 0 & df1$CNTR_CODE == "NL",1],col="red",main="df1")
+```
+
+-->
 
 ## NUTS2 of the Netherland
 
@@ -217,38 +331,16 @@ leaflet(CE.sf) %>%
 ![](pics/leaflet_netherlands.PNG)
 
 
-## Global Administrative Boundaries
 
 
-### Get the data
+## The package `tidycensus`
 
-```{r,eval=F}
-FRA4 <- raster::getData('GADM', country='FRA', 
-                        level=4)
+```{r out.height= "90%"}
+library(tidycensus)
+data(county_laea)
+
+qtm(county_laea,fill=c("#8B1A1A"))
 ```
-
-```{r,eval=F,echo=F}
-save(FRA4,file="data/FRA4.RData")
-```
-
-### [**Overview of the data**](https://rpubs.com/Jan-Philipp_Kolb/FRA4)
-
-![](pics/FRA4_data_rpubs.PNG){80%}
-
-
-## Plot the map
-
-```{r,eval=T,echo=F}
-load("data/FRA4.RData")
-```
-
-```{r}
-qtm(FRA4,fill="blue")
-```
-
-
-
-
 
 
 ## `raster` - Geographic Data Analysis and Modeling
@@ -285,6 +377,36 @@ Robert J. Hijmans [cre, aut],
 
 
 
+## Global Administrative Boundaries
+
+
+### Get the data
+
+```{r,eval=F}
+FRA4 <- raster::getData('GADM', country='FRA', 
+                        level=4)
+```
+
+```{r,eval=F,echo=F}
+save(FRA4,file="data/FRA4.RData")
+```
+
+### [**Overview of the data**](https://rpubs.com/Jan-Philipp_Kolb/FRA4)
+
+![](pics/FRA4_data_rpubs.PNG){width = 80%}
+
+
+## Plot the map
+
+```{r,eval=T,echo=F}
+load("data/FRA4.RData")
+```
+
+```{r}
+qtm(FRA4,fill="blue")
+```
+
+
 ## Create colour gradiation
 
 ```{r out.width = "80%"}
@@ -303,6 +425,14 @@ png("maps/map_challenge_day5.png")
   qtm(FRA4,"fantasy_val", fill.palette = rgb(0,0,seq(0,1,.1),0),borders = "blue")
 dev.off()
 ```
+
+
+
+## Example: Overpass API
+
+![](pics/BSPoverpassMannheim.PNG)
+
+
 
 ## Longitude and Latitude
 
@@ -332,8 +462,23 @@ citation("tmaptools")
 ## Get more information 
 
 ```{r}
-(gc_z <- geocode_OSM("Zürich",details = T))
+gc_z <- geocode_OSM("Zürich",details = T)
+names(gc_z)
 ```
+
+
+## An interactive map with a popup
+
+```{r,eval=F}
+library(leaflet)
+gcz <- geocode_OSM("Zürich")
+leaflet() %>%  addTiles() %>%  
+  addMarkers(lng=gcz$coords[1] , lat=gcz$coords[2] ,
+             popup="The conference place")
+
+```
+
+![](pics/zurich_interactive.PNG)
 
 
 ## A package to get Openstreetmap data
@@ -535,13 +680,43 @@ state_choropleth(df_pop_state)
 
 ![](pics/osm_amenity_bar.PNG)
 
-## 
+## Get more data from OSM
 
 ```{r,eval=F}
 bars <- extract_osm_objects(key = 'amenity',
                            #value = "bar",
                            bbox = bbox)
 ```
+
+
+## The `elevatr` package
+
+```{r out.width = "80%"}
+library(elevatr)
+# load("data/dat_osm_barcelona_metro.Rdata")
+elevation <- get_elev_raster(dat, z = 9)
+plot(elevation)
+```
+
+
+## Coming back to the world
+
+
+```{r}
+library(globe)
+globeearth(eye=place("titanic"),col="royalblue")
+```
+
+
+## Available places for `globeearth`
+
+‘nedlands’, ‘curtin’, ‘perth’, ‘northpole’, ‘southpole’, ‘casey’, ‘mawson’, ‘madrid’, ‘aarhus’, ‘aalborg’, ‘newyorkcity’, ‘titanic’, ‘pyongyang’, ‘everest’, ‘kilimanjaro’
+
+```{r out.height = "80%"}
+globeearth(eye=place("southpole"),col="royalblue")
+```
+
+
 
 
 ## Resources
