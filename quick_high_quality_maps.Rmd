@@ -1,5 +1,5 @@
 ---
-title: "Quick high quality maps with R"
+title: "Quick high quality maps with R" 
 author: "Jan-Philipp Kolb"
 date: "July 7 2021"
 output: 
@@ -19,29 +19,42 @@ knitr::opts_chunk$set(echo = T,warning=F,message=F)
 
 ## About the tutorial
 
+
+### Organisation
+
 - Four sections with each 20 min presentation and 10 minutes testing time for you
 
 ### Sections
 
-1. Focus is on quick maps - I will present some classics 
+1. Focus on quick maps - some classics 
 
-2. Simple Features in R - the new way to work with geodata in R
+2. Basic data structures - Simple Features
 
-3. OSM data in R 
+<!--
+the new way to work with geodata in R
+-->
 
-4. 
+3. Openstreetmap 
+
+4. OSM maps with R
+
+<!--
+30 day maps challenge
+-->
 
 
+## Hello World
 
-## A classic - the `maps` package
+### A classic - the `maps` package
 
-- maps package by Richard A. Becker, Allan R. Wilks and Ray Brownrigg
+- `maps` package by Richard A. Becker, Allan R. Wilks and Ray Brownrigg
 
-```{r}
+```{r out.height = "80%"}
 library(maps)
 data(world.cities)
 map()
-map.cities(world.cities,col=rgb(0,0,1,.05),cex=2,pch=20)
+map.cities(world.cities,col=rgb(0,0,1,.05),cex=2,
+           pch=20)
 ```
 
 
@@ -64,6 +77,9 @@ head(wrld_simpl@data)
 ![](pics/wrld_simpl.PNG)
 
 ## The `sp` package
+
+### Classes and Methods for Spatial Data
+
 
 ```{r}
 sp::spplot(wrld_simpl,"AREA")
@@ -159,6 +175,21 @@ tm_shape(World) + tm_fill(c("pop_est", "economy"),
 ```
 
 
+
+## Map for only on country
+
+```{r}
+tm_shape(World[World$name=="Netherlands", ]) +
+    tm_polygons()
+```
+
+<!--
+You can see that the boundaries are greatly simplified.
+-->
+
+
+
+
 ## Population in Dutch municipalities
 
 ```{r}
@@ -168,15 +199,14 @@ qtm(NLD_muni,"population")
 
 
 
-## The `World` dataset
+## About the `World` dataset
 
 ### Natural Earth
 
 - Dataset contains information from [**Natural Earth**](http://www.naturalearthdata.com/)
 
 ```{r}
-library(tmap)
-data(World)
+data(World,package="tmap")
 ```
 
 ![](pics/NaturalEarthData.PNG)
@@ -198,7 +228,9 @@ data(World)
 
 ![](pics/world_dataset.PNG)
 
-## [Simple Features](https://r-spatial.github.io/sf/)
+## Section 2: Basic data structures
+
+### [Simple Features](https://r-spatial.github.io/sf/)
 
 ```{r}
 library(sf)
@@ -235,18 +267,6 @@ tm_shape(World[World$name=="France", ]) +
     tm_polygons()
 ```
 -->
-
-## Use another country
-
-```{r}
-tm_shape(World[World$name=="Netherlands", ]) +
-    tm_polygons()
-```
-
-<!--
-You can see that the boundaries are greatly simplified.
--->
-
 
 ## Eurostat Data
 
@@ -293,7 +313,8 @@ load("data/eurostat_df1.RData")
 ## A more detailed map of the Netherlands 
 
 ```{r}
-plot(df60[df60$LEVL_CODE == 0 & df60$CNTR_CODE == "NL",1])
+plot(df60[df60$LEVL_CODE == 0 & 
+            df60$CNTR_CODE == "NL",1])
 ```
 
 <!--
@@ -426,7 +447,9 @@ png("maps/map_challenge_day5.png")
 dev.off()
 ```
 
+## Section 3 - Openstreetmap data
 
+![](pics/osm_logo.PNG)
 
 ## Example: Overpass API
 

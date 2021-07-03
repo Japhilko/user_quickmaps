@@ -3,6 +3,12 @@
 # 
 
 
+
+# purl the presentation ---------------------------------------------------
+
+purl("quick_high_quality_maps.Rmd")
+
+
 bars <- extract_osm_objects(key = 'amenity',
                             #value = "bar",
                             bbox = bbox)
@@ -136,6 +142,9 @@ DT::datatable(df60)
 
 # osmdata -----------------------------------------------------------------
 
+
+# https://docs.ropensci.org/osmplotr/articles/basic-maps.html
+
 library(dplyr)
 library(osmplotr)
 library(osmdata)
@@ -162,9 +171,25 @@ dat2 <- dat2$osm_lines
 
 
 
+# World simple ------------------------------------------------------------
+
+library(maptools)
+data("wrld_simpl")
+
+DT::datatable(wrld_simpl@data)
+
+
+
+# Geocoding ---------------------------------------------------------------
+
+info <- tmaptools::geocode_OSM("Bahnhof Zürich",details=T)
 
 
 # 30 day map challenge ----------------------------------------------------
 
 
 # https://urbandatapalette.com/post/2020-12-summary-30-map-challenge/
+
+# http://web.archive.org/web/20080328104539/http://library.thinkquest.org:80/C006628/download.html
+
+# https://www.gispo.fi/en/material-work/30daymapchallenge-2020-bigger-and-better/
