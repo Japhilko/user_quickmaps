@@ -1,0 +1,79 @@
+---
+title: "Addon"
+author: "Jan-Philipp Kolb"
+date: "3 7 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load example data
+
+### Data source Eurostat
+
+- Data about unemployment in Europe
+
+```{r}
+url <- "https://raw.githubusercontent.com/Japhilko/
+GeoData/master/2015/data/Unemployment07a13.csv"
+
+Unemp <- read.csv(url) 
+```
+
+
+## Excursus: the command `match`
+
+### Create two example vectors
+
+```{r}
+vec_a <- c("A",2,6,1,"C")
+vec_b <- c(1,"C",2)
+```
+
+### Bringing the two vectors together
+
+- With the function `match` you can see which element of the first vector matches the second vector.
+
+```{r}
+match(vec_a,vec_b)
+```
+
+
+
+## Use the package `tmap` with your data
+
+```{r,warning=F}
+library("tmap")
+```
+
+### Match the data
+
+```{r}
+iso_a2<- substr(World$iso_a3,1,2)
+ind <- match(iso_a2,Unemp$GEO)
+World$Val2007M12 <- Unemp$Val2007M12[ind]
+World$Val2013M01 <- Unemp$Val2013M01[ind]
+```
+
+## Plot a map
+
+```{r}
+qtm(World,c("Val2007M12","Val2013M01"))
+```
+
+
+
+## OSM Map features
+
+![](pics/osm_amenity_bar.PNG)
+
+## Get more data from OSM
+
+```{r,eval=F}
+bars <- extract_osm_objects(key = 'amenity',
+                           #value = "bar",
+                           bbox = bbox)
+```
+

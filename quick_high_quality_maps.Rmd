@@ -28,9 +28,10 @@ knitr::opts_chunk$set(echo = T,warning=F,message=F)
 
 1. Focus on quick maps - some classics 
 
-2. Basic data structures - Simple Features
+2. Data sources and structures 
 
 <!--
+- Simple Features
 the new way to work with geodata in R
 -->
 
@@ -49,7 +50,7 @@ the new way to work with geodata in R
 
 - `maps` package by Richard A. Becker, Allan R. Wilks and Ray Brownrigg
 
-```{r out.height = "80%"}
+```{r out.height = "60%"}
 library(maps)
 data(world.cities)
 map()
@@ -63,11 +64,28 @@ map.cities(world.cities,col=rgb(0,0,1,.05),cex=2,
 ```{r}
 library(maptools)
 data("wrld_simpl")
-plot(wrld_simpl,col="red")
+plot(wrld_simpl,col="royalblue")
 ```
 
 
-## The `wrld_simpl` package
+
+## Colour picker
+
+![](pics/colourpicker.png)
+
+## A second classic - `maptools` package
+
+```{r}
+library(maptools)
+data("wrld_simpl")
+plot(wrld_simpl,col=c("#CD3333"))
+```
+
+
+
+## The maptools package
+
+### `wrld_simpl` data 
 
 ```{r,eval=F}
 head(wrld_simpl@data)
@@ -228,7 +246,47 @@ data(World,package="tmap")
 
 ![](pics/world_dataset.PNG)
 
-## Section 2: Basic data structures
+
+## The package `choroplethrMaps`
+
+```{r}
+library("choroplethr")
+library("choroplethrMaps")
+data(df_pop_state)
+state_choropleth(df_pop_state)
+```
+
+
+
+## The package `tidycensus`
+
+```{r out.height= "70%"}
+library(tidycensus)
+data(county_laea)
+
+qtm(county_laea,fill=c("#8B1A1A"))
+```
+
+
+## Coming back to the world
+
+
+```{r}
+library(globe)
+globeearth(eye=place("titanic"),col="royalblue")
+```
+
+
+## Available places for `globeearth`
+
+‘nedlands’, ‘curtin’, ‘perth’, ‘northpole’, ‘southpole’, ‘casey’, ‘mawson’, ‘madrid’, ‘aarhus’, ‘aalborg’, ‘newyorkcity’, ‘titanic’, ‘pyongyang’, ‘everest’, ‘kilimanjaro’
+
+```{r out.height = "80%"}
+globeearth(eye=place("southpole"),col="royalblue")
+```
+
+
+## Section 2: Data sources and structures
 
 ### [Simple Features](https://r-spatial.github.io/sf/)
 
@@ -241,32 +299,6 @@ library(sf)
 ![](pics/sf_sticky_people.jpg)
 
 
-## Simple Features
-
-
-![](pics/sf.PNG){height=50%}
-
-```{r}
-class(World)
-```
-
-
-
-- [**Vignette of the `sf` package**](https://cran.r-project.org/web/packages/sf/vignettes/sf1.html)
-
-## Attribute values and an abridged version of the geometry
-
-![](pics/sf_exp.PNG)
-
-
-<!--
-## Visualize only one country
-
-```{r}
-tm_shape(World[World$name=="France", ]) +
-    tm_polygons()
-```
--->
 
 ## Eurostat Data
 
@@ -304,6 +336,7 @@ load("data/eurostat_df60.RData")
 load("data/eurostat_df10.RData")
 load("data/eurostat_df1.RData")
 ```
+
 
 ### [The dataset](https://rpubs.com/Jan-Philipp_Kolb/eurostat_gisco)
 
@@ -354,14 +387,33 @@ leaflet(CE.sf) %>%
 
 
 
-## The package `tidycensus`
+## Simple Feature collection: multipolygon
 
-```{r out.height= "90%"}
-library(tidycensus)
-data(county_laea)
 
-qtm(county_laea,fill=c("#8B1A1A"))
+### Data Structures of `df60`
+
+![](pics/df60_sf.PNG)
+
+
+## Simple Features
+
+
+![](pics/sf.PNG){height=50%}
+
+```{r}
+class(World)
 ```
+
+
+
+- [**Vignette of the `sf` package**](https://cran.r-project.org/web/packages/sf/vignettes/sf1.html)
+
+## Simple feature collection
+
+
+### Attribute values and an abridged version of the geometry 
+
+![](pics/sf_exp.PNG)
 
 
 ## `raster` - Geographic Data Analysis and Modeling
@@ -451,16 +503,28 @@ dev.off()
 
 ![](pics/osm_logo.PNG)
 
-## Example: Overpass API
+## Openstreetmap map features
+
+### Information in the wiki
+
+![](pics/osm_mapfeat_craft.PNG)
+
+https://wiki.openstreetmap.org/wiki/Map_features
+
+
+## Example: [Overpass API](https://overpass-api.de/)
+
+
+### https://overpass-turbo.eu/
 
 ![](pics/BSPoverpassMannheim.PNG)
 
 
 
-## Longitude and Latitude
+## [Longitude and Latitude](https://travellingacrosstime.com/2021/03/02/latitude-and-longitude/)
 
 ![](pics/definition-of-latitude-longitude.jpg)
-
+Source: [Traveling across time](https://travellingacrosstime.com/2021/03/02/latitude-and-longitude/)
 
 ## `tmaptools` - Thematic Map Tools 
 
@@ -478,11 +542,16 @@ citation("tmaptools")
 
 ## Geocoordinates
 
+### Get geocodes 
+
 ```{r}
 (gc_z <- geocode_OSM("Zürich"))
 ```
 
 ## Get more information 
+
+
+### More details
 
 ```{r}
 gc_z <- geocode_OSM("Zürich",details = T)
@@ -504,7 +573,12 @@ leaflet() %>%  addTiles() %>%
 ![](pics/zurich_interactive.PNG)
 
 
-## A package to get Openstreetmap data
+
+
+
+## Section 4: OSM maps with R
+
+### A package to get Openstreetmap data
 
 Author: Mark Padgham
 
@@ -544,10 +618,6 @@ qtm(dat_M,fill=c("purple"),borders="black")
 ```
 
 ![](pics/bui_mannheim.PNG){width=50%}
-
-## Colour picker
-
-![](pics/colourpicker.png)
 
 ## The package `osmdata`
 
@@ -625,135 +695,72 @@ print_osm_map(map)
 ![](pics/streets_berlin.PNG){width=50%}
 
 
-## 30daymapchallenge
 
-![](pics/30daymapchallenge_copy_1jpg)
-
-
-## Day 9 monochrome
-
-![](pics/trier_monochrome.png)
-
-
-## Load example data
-
-### Data source Eurostat
-
-- Data about unemployment in Europe
-
-```{r}
-url <- "https://raw.githubusercontent.com/Japhilko/
-GeoData/master/2015/data/Unemployment07a13.csv"
-
-Unemp <- read.csv(url) 
-```
-
-
-## Excursus: the command `match`
-
-### Create two example vectors
-
-```{r}
-vec_a <- c("A",2,6,1,"C")
-vec_b <- c(1,"C",2)
-```
-
-### Bringing the two vectors together
-
-- With the function `match` you can see which element of the first vector matches the second vector.
-
-```{r}
-match(vec_a,vec_b)
-```
-
-
-
-## Use the package `tmap` with your data
-
-```{r,warning=F}
-library("tmap")
-```
-
-### Match the data
-
-```{r}
-iso_a2<- substr(World$iso_a3,1,2)
-ind <- match(iso_a2,Unemp$GEO)
-World$Val2007M12 <- Unemp$Val2007M12[ind]
-World$Val2013M01 <- Unemp$Val2013M01[ind]
-```
-
-## Plot a map
-
-```{r}
-qtm(World,c("Val2007M12","Val2013M01"))
-```
-
-
-## The package `choroplethrMaps`
-
-```{r}
-library("choroplethr")
-library("choroplethrMaps")
-data(df_pop_state)
-state_choropleth(df_pop_state)
-```
-
-## OSM Map features
-
-![](pics/osm_amenity_bar.PNG)
-
-## Get more data from OSM
-
-```{r,eval=F}
-bars <- extract_osm_objects(key = 'amenity',
-                           #value = "bar",
-                           bbox = bbox)
-```
 
 
 ## The `elevatr` package
 
 ```{r out.width = "80%"}
 library(elevatr)
-# load("data/dat_osm_barcelona_metro.Rdata")
 elevation <- get_elev_raster(dat, z = 9)
 plot(elevation)
 ```
 
 
-## Coming back to the world
+## Mapping is fun
+
+![](pics/topitukjanov.PNG)
+
+ 
+## [#30daymapchallenge](https://tjukanov.org/30daymapchallenge)
+
+![](pics/30daymapchallenge_copy_1jpg)
+
+[Github repo - #30daymapchallenge](https://github.com/tjukanovt/30DayMapChallenge)
 
 
-```{r}
-library(globe)
-globeearth(eye=place("titanic"),col="royalblue")
-```
+## Exercise: Create a monochrome map
 
+![](pics/trier_monochrome.png)
 
-## Available places for `globeearth`
-
-‘nedlands’, ‘curtin’, ‘perth’, ‘northpole’, ‘southpole’, ‘casey’, ‘mawson’, ‘madrid’, ‘aarhus’, ‘aalborg’, ‘newyorkcity’, ‘titanic’, ‘pyongyang’, ‘everest’, ‘kilimanjaro’
-
-```{r out.height = "80%"}
-globeearth(eye=place("southpole"),col="royalblue")
-```
 
 
 
 
 ## Resources
 
-- github repo on osmplotr at [**ropensci**](https://github.com/ropensci/osmplotr); 
-[Intro to the package](https://github.com/ropensci/osmplotr?utm_content=bufferd5ff1&utm_medium=social&utm_source=twitter.com&utm_campaign=buffer)
+### Package `osmplotr`
 
-- [#30daymapchallenge](https://tjukanov.org/30daymapchallenge)
+
+- Github repo on osmplotr at [**ropensci**](https://github.com/ropensci/osmplotr)
+
+- [Intro to the package](https://github.com/ropensci/osmplotr?utm_content=bufferd5ff1&utm_medium=social&utm_source=twitter.com&utm_campaign=buffer)
+
+
+
+### Package `sf`
+
+- [Vignette](https://cran.r-project.org/web/packages/sf/vignettes/sf5.html)
+
+
+### [`tmap` package](https://tlorusso.github.io/geodata_workshop/tmap_package)
+
+
+
+### [rspatial](rspatial.org)
 
 - [Spatial Data Science](https://rspatial.org/raster/index.html)
 
 
 
 
+## Data sources
+
+- [Covid 19 datahub](https://covid19datahub.io/)
+
+- [**Historical data*](http://web.archive.org/web/20080328104539/)
+
 ## Further resources
 
 - [Tips for working with images in Rmd files](http://zevross.com/blog/2017/06/19/tips-and-tricks-for-working-with-images-and-figures-in-r-markdown-documents/)
+

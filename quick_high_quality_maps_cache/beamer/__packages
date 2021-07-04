@@ -11,3 +11,8 @@ maps
 sp
 maptools
 tidycensus
+stringr
+acs
+choroplethr
+choroplethrMaps
+globe
