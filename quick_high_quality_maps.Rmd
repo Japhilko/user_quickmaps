@@ -54,8 +54,7 @@ the new way to work with geodata in R
 library(maps)
 data(world.cities)
 map()
-map.cities(world.cities,col=rgb(0,0,1,.05),cex=2,
-           pch=20)
+map.cities(world.cities,col=rgb(0,0,1,.05),pch=20)
 ```
 
 
@@ -343,6 +342,11 @@ load("data/eurostat_df1.RData")
 ![](pics/eurostat_df60.PNG)
 
 
+### Geometry - multipolygon
+
+![](pics/geometry_multipolygon.PNG)
+
+
 ## A more detailed map of the Netherlands 
 
 ```{r}
@@ -383,8 +387,6 @@ leaflet(CE.sf) %>%
 ```
 
 ![](pics/leaflet_netherlands.PNG)
-
-
 
 
 ## Simple Feature collection: multipolygon
@@ -505,14 +507,25 @@ dev.off()
 
 ## Openstreetmap map features
 
+
+- Key/value scheme
+- Information about the available keys and features on the [**wiki**](https://wiki.openstreetmap.org/wiki/Map_features)
+- https://wiki.openstreetmap.org/wiki/Map_features
+
+
 ### Information in the wiki
 
 ![](pics/osm_mapfeat_craft.PNG)
 
-https://wiki.openstreetmap.org/wiki/Map_features
+
 
 
 ## Example: [Overpass API](https://overpass-api.de/)
+
+- Overpass turbo (overpass-turbo.eu) is a web based data mining tool for OpenStreetMap.
+- The project is maintained by Martin Raifer. 
+- Source code is on [**github**](https://github.com/tyrasd/overpass-turbo). 
+- The Overpass API was created by [Roland Olbricht](https://wiki.openstreetmap.org/wiki/User:Roland.olbricht) 
 
 
 ### https://overpass-turbo.eu/
@@ -573,12 +586,25 @@ leaflet() %>%  addTiles() %>%
 ![](pics/zurich_interactive.PNG)
 
 
+## [Stamen maps](http://maps.stamen.com/#watercolor/12/37.7706/-122.3782)
 
+![](pics/stamen_maps.PNG)
 
+## [Make a stamen map with R](https://thinking-spatial.org/courses/angewandte_geodatenverarbeitung/kurs05/)
+
+```{r watercolor_zuri,eval=F}
+library(ggmap)
+myMap <- get_stamenmap(bbox=c(8.448006, 47.320220,  
+                              8.625441, 47.434666 ), 
+                  maptype="watercolor", crop=TRUE)
+ggmap(myMap)
+```
+
+![](pics/tonermap_zuri.PNG){width=50%}
 
 ## Section 4: OSM maps with R
 
-### A package to get Openstreetmap data
+### [A package to get Openstreetmap data](https://cran.r-project.org/web/packages/osmplotr/vignettes/basic-maps.html)
 
 Author: Mark Padgham
 
@@ -619,6 +645,33 @@ qtm(dat_M,fill=c("purple"),borders="black")
 
 ![](pics/bui_mannheim.PNG){width=50%}
 
+
+## Same plot with `ggmap`
+
+```{r, out.width = "70%"}
+library(ggmap)
+ggplot() + geom_sf(data=dat_M, colour="#238443",
+    fill="#004529", alpha=.5) + labs(x="",y="")
+```
+
+
+## You can add more map elements
+
+### Download further data 
+
+```{r,eval=F}
+dat_h <- extract_osm_objects (key = 'highway',
+                              bbox = bbox)
+```
+
+### Add info - more options [**here**](http://joshuamccrain.com/tutorials/maps/streets_tutorial.html)
+
+```{r,eval=F}
+m + geom_sf(data=dat_h)
+```
+
+![](pics/Mannheim_q_roads.pdf)
+
 ## The package `osmdata`
 
 ### Install and load `osmdata`
@@ -635,7 +688,7 @@ library(osmdata)
 ### Get a bounding box for a city
 
 ```{r}
-bbox <- getbb("Berlin")
+bbox <- osmdata::getbb("Berlin")
 ```
 
 
@@ -660,7 +713,7 @@ dat <- extract_osm_objects(key = 'highway',
 
 ## A quick map for the primary streets in Berlin
 
-```{r}
+```{r, out.width = "80%"}
 qtm(dat)
 ```
 
@@ -668,7 +721,7 @@ qtm(dat)
 
 ### OSM map feature
 
-![](pics/secondary_highway_osm)
+![](pics/secondary_highway_osm){width=50%}
 
 
 ### New Information - same bounding box
@@ -695,6 +748,31 @@ print_osm_map(map)
 ![](pics/streets_berlin.PNG){width=50%}
 
 
+## Metro lines in Paris
+
+```{r,echo=F}
+library(tmaptools)
+library(osmplotr)
+library(tmap)
+```
+
+```{r,eval=F}
+dat_p <- extract_osm_objects (key = 'route',
+                  value="subway", bbox = bbox)
+```
+
+```{r,eval=F,echo=F}
+save(dat_p,file="data/metro_berlin.RData")
+```
+
+```{r,echo=F}
+load("data/metro_berlin.RData")
+```
+
+
+```{r}
+qtm(dat_p,"colors")
+```
 
 
 
@@ -727,9 +805,10 @@ plot(elevation)
 
 
 
-## Resources
+## Resources for packages
 
-### Package `osmplotr`
+
+### `osmplotr`
 
 
 - Github repo on osmplotr at [**ropensci**](https://github.com/ropensci/osmplotr)
@@ -738,29 +817,69 @@ plot(elevation)
 
 
 
-### Package `sf`
+### `sf`
 
-- [Vignette](https://cran.r-project.org/web/packages/sf/vignettes/sf5.html)
-
-
-### [`tmap` package](https://tlorusso.github.io/geodata_workshop/tmap_package)
+- [Vignette 5 for `sf` package](https://cran.r-project.org/web/packages/sf/vignettes/sf5.html)
 
 
+### [`tmap`](https://tlorusso.github.io/geodata_workshop/tmap_package)
+
+- Vignette - [**Get started**](https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html) with `tmap` package
+
+
+### [`ggmap`]()
+
+- [Thinking spatially (German)](https://thinking-spatial.org/courses/angewandte_geodatenverarbeitung/kurs05/)
+
+- [`ggmap` und osmdata](http://joshuamccrain.com/tutorials/maps/streets_tutorial.html)
+
+## More packages
+
+### [`osmdata`]()
+
+- [Vignette](https://cran.r-project.org/web/packages/osmdata/vignettes/osmdata.html)
+
+### [`choroplethr`](https://www.rdocumentation.org/packages/choroplethr/versions/3.7.0)
+
+
+### [`maptools`](https://cran.r-project.org/web/packages/maptools/)
+
+
+### [`sp`]()
+
+## Data sources
+
+### Examples for sources
+
+- [Covid 19 datahub](https://covid19datahub.io/)
+
+- [**Historical data**](http://web.archive.org/web/20080328104539/)
+
+- [Draught Monitor](https://droughtmonitor.unl.edu/Data/GISData.aspx)
+
+## Further resources
+
+- [Tips for working with images in Rmd files](http://zevross.com/blog/2017/06/19/tips-and-tricks-for-working-with-images-and-figures-in-r-markdown-documents/)
 
 ### [rspatial](rspatial.org)
 
 - [Spatial Data Science](https://rspatial.org/raster/index.html)
 
 
+### Openstreetmap
+
+- [Openstreetmap Wiki](https://wiki.openstreetmap.org/wiki/Overpass_turbo)
 
 
-## Data sources
 
-- [Covid 19 datahub](https://covid19datahub.io/)
+### 30daymapchallenge
 
-- [**Historical data*](http://web.archive.org/web/20080328104539/)
+- [2020 summary](https://gispofinland.medium.com/30daymapchallenge-2020-bigger-and-better-27a73cf4f1f8)
 
-## Further resources
+- [A personal review of gontsa](https://gontsa.medium.com/my-30daymapchallenge-2020-bb24fd7c8a8)
 
-- [Tips for working with images in Rmd files](http://zevross.com/blog/2017/06/19/tips-and-tricks-for-working-with-images-and-figures-in-r-markdown-documents/)
+- [challenge with R](https://tkardi.ee/writeup/30daymapchallenge/)
 
+### Tips and tricks for R
+
+- [Colour palettes](https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-great-data-visualization/)
