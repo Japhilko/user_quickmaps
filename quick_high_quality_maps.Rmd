@@ -43,6 +43,10 @@ the new way to work with geodata in R
 30 day maps challenge
 -->
 
+## Github repository
+
+![](pics/github_repo.PNG)
+
 
 ## Hello World
 
@@ -245,6 +249,9 @@ data(World,package="tmap")
 
 ![](pics/world_dataset.PNG)
 
+## Choropleth
+
+![](pics/choropleth_map.PNG)
 
 ## The package `choroplethrMaps`
 
@@ -252,6 +259,22 @@ data(World,package="tmap")
 library("choroplethr")
 library("choroplethrMaps")
 data(df_pop_state)
+state_choropleth(df_pop_state)
+```
+
+
+## Argument zoom
+
+```{r}
+state_choropleth(df_pop_state,
+      zoom=c("california","nevada"))
+```
+
+
+
+## US population 2012
+
+```{r}
 state_choropleth(df_pop_state)
 ```
 
@@ -340,11 +363,6 @@ load("data/eurostat_df1.RData")
 ### [The dataset](https://rpubs.com/Jan-Philipp_Kolb/eurostat_gisco)
 
 ![](pics/eurostat_df60.PNG)
-
-
-### Geometry - multipolygon
-
-![](pics/geometry_multipolygon.PNG)
 
 
 ## A more detailed map of the Netherlands 
@@ -508,14 +526,14 @@ dev.off()
 ## Openstreetmap map features
 
 
-- Key/value scheme
-- Information about the available keys and features on the [**wiki**](https://wiki.openstreetmap.org/wiki/Map_features)
-- https://wiki.openstreetmap.org/wiki/Map_features
-
-
 ### Information in the wiki
 
 ![](pics/osm_mapfeat_craft.PNG)
+
+
+- Key/value scheme
+- Information about the available keys and features on the [**wiki**](https://wiki.openstreetmap.org/wiki/Map_features)
+- https://wiki.openstreetmap.org/wiki/Map_features
 
 
 
@@ -601,6 +619,67 @@ ggmap(myMap)
 ```
 
 ![](pics/tonermap_zuri.PNG){width=50%}
+
+
+
+## Load example data
+
+### Data source Eurostat
+
+- Data about unemployment in Europe
+
+```{r}
+url <- "https://raw.githubusercontent.com/Japhilko/
+GeoData/master/2015/data/Unemployment07a13.csv"
+
+Unemp <- read.csv(url) 
+```
+
+
+## Excursus: the command `match`
+
+### Create two example vectors
+
+```{r}
+vec_a <- c("A",2,6,1,"C")
+vec_b <- c(1,"C",2)
+```
+
+### Bringing the two vectors together
+
+- With the function `match` you can see which element of the first vector matches the second vector.
+
+```{r}
+match(vec_a,vec_b)
+```
+
+## Exercise 
+
+Download the Unemployment data and visualize it in a map. 
+
+## Use the package `tmap` with your data
+
+```{r,warning=F}
+library("tmap")
+```
+
+### Match the data
+
+```{r}
+iso_a2<- substr(World$iso_a3,1,2)
+ind <- match(iso_a2,Unemp$GEO)
+World$Val2007M12 <- Unemp$Val2007M12[ind]
+World$Val2013M01 <- Unemp$Val2013M01[ind]
+```
+
+## Plot a map
+
+```{r}
+qtm(World,c("Val2007M12","Val2013M01"))
+```
+
+
+
 
 ## Section 4: OSM maps with R
 
@@ -813,13 +892,13 @@ plot(elevation)
 
 - Github repo on osmplotr at [**ropensci**](https://github.com/ropensci/osmplotr)
 
-- [Intro to the package](https://github.com/ropensci/osmplotr?utm_content=bufferd5ff1&utm_medium=social&utm_source=twitter.com&utm_campaign=buffer)
+- [Introduction to the **`osmplotr` package**](https://github.com/ropensci/osmplotr?utm_content=bufferd5ff1&utm_medium=social&utm_source=twitter.com&utm_campaign=buffer)
 
 
 
 ### `sf`
 
-- [Vignette 5 for `sf` package](https://cran.r-project.org/web/packages/sf/vignettes/sf5.html)
+- [**Vignette for `sf` package**](https://cran.r-project.org/web/packages/sf/vignettes/sf5.html) - Plotting Simple Features
 
 
 ### [`tmap`](https://tlorusso.github.io/geodata_workshop/tmap_package)
@@ -841,11 +920,16 @@ plot(elevation)
 
 ### [`choroplethr`](https://www.rdocumentation.org/packages/choroplethr/versions/3.7.0)
 
+- [US County Chropleths](https://cran.microsoft.com/snapshot/2015-08-17/web/packages/choroplethr/vignettes/c-county-choropleth.html)
+
 
 ### [`maptools`](https://cran.r-project.org/web/packages/maptools/)
 
+- [Create maps with maptools R package](https://www.r-bloggers.com/2011/12/create-maps-with-maptools-r-package/)
 
 ### [`sp`]()
+
+- [Using spatial data in R](https://cengel.github.io/R-spatial/intro.html)
 
 ## Data sources
 
