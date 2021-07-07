@@ -185,6 +185,37 @@ DT::datatable(wrld_simpl@data)
 info <- tmaptools::geocode_OSM("Bahnhof Zürich",details=T)
 
 
+
+bbox <- get_bbox (c(8.4539 , 49.4805  , 
+                    8.4774 , 49.4943 ))
+
+
+# dat_M <- extract_osm_objects (key = 'building', 
+#                              bbox = bbox)
+
+load("data/osm_mannheim.Rdata")
+
+
+dat_h <- extract_osm_objects (key = 'highway',bbox = bbox)
+
+save(dat_h,file="data/highways_quadrate.RData")
+
+
+library(ggmap)
+m <- ggplot() + geom_sf(data=dat_M, colour="#238443",
+                   fill="#004529", alpha=.5) + labs(x="",y="")
+
+pdf("pics/Mannheim_q_roads.pdf")
+  m + geom_sf(data=dat_h)
+dev.off()
+
+
+###################
+
+state_choropleth(df_pop_state,zoom=c("california","nevada"))
+
+knitr::purl("quick_high_quality_maps.Rmd")
+
 # 30 day map challenge ----------------------------------------------------
 
 

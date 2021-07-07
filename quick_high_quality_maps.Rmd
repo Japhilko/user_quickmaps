@@ -13,9 +13,22 @@ knitr::opts_chunk$set(echo = T,warning=F,message=F)
 ```
 
 
+## Motivation - [**R Journal paper**](https://journal.r-project.org/archive/2019/RJ-2019-041/index.html)
+
+![](pics/myrjournal_articel.PNG)
+
+## Motivation - [**30daymapchallenge**](https://tjukanov.org/30daymapchallenge)
+
+![](pics/30daymapchallenge_copy_1jpg)
+
+[**Github repo** for the #30daymapchallenge](https://github.com/tjukanovt/30DayMapChallenge)
+
+
 ## Motivation
 
 ![](pics/monochrome_twitter.png)
+
+
 
 ## About the tutorial
 
@@ -43,7 +56,9 @@ the new way to work with geodata in R
 30 day maps challenge
 -->
 
-## Github repository
+## [**Github repository** for this course](github.com/Japhilko/user_quickmaps)
+
+### github.com/Japhilko/user_quickmaps
 
 ![](pics/github_repo.PNG)
 
@@ -62,7 +77,7 @@ map.cities(world.cities,col=rgb(0,0,1,.05),pch=20)
 ```
 
 
-## A second classic - `maptools` package
+## A second classic - [**`maptools`**](https://cran.r-project.org/web/packages/maptools/)  package
 
 ```{r}
 library(maptools)
@@ -70,13 +85,20 @@ data("wrld_simpl")
 plot(wrld_simpl,col="royalblue")
 ```
 
+## You can use the addin [**colour picker **](https://cran.r-project.org/web/packages/colourpicker/index.html)
+
+```{r,eval=F}
+install.packages("colourpicker")
+```
+
+![](pics/addins_colourpicker.PNG)
 
 
 ## Colour picker
 
 ![](pics/colourpicker.png)
 
-## A second classic - `maptools` package
+## A second classic - `maptools` package - now in red
 
 ```{r}
 library(maptools)
@@ -86,7 +108,7 @@ plot(wrld_simpl,col=c("#CD3333"))
 
 
 
-## The maptools package
+## `wrld_simpl` data in `maptools`package
 
 ### `wrld_simpl` data 
 
@@ -238,7 +260,7 @@ data(World,package="tmap")
 ### Available variables in the data set
 
 - [**ISO classification**](http://userpage.chemie.fu-berlin.de/diverse/doc/ISO_3166.html)
-- country name
+- Country name
 - Area, population, population density, 
 - [**Gross Domestic Product**](https://en.wikipedia.org/wiki/Gross_domestic_product)
 - Gross domestic product [**at purchasing power parities**](https://en.wikipedia.org/wiki/List_of_countries_by_GDP_%28PPP%29_per_capita)
@@ -253,7 +275,9 @@ data(World,package="tmap")
 
 ![](pics/choropleth_map.PNG)
 
-## The package `choroplethrMaps`
+Source: [**Wikipedia**](https://en.wikipedia.org/wiki/Choropleth_map)
+
+## The package [**`choroplethrMaps`**](https://cran.r-project.org/web/packages/choroplethrMaps/index.html)
 
 ```{r}
 library("choroplethr")
@@ -280,7 +304,7 @@ state_choropleth(df_pop_state)
 
 
 
-## The package `tidycensus`
+## The package [**`tidycensus`**](https://jennhuck.github.io/workshops/tidycensus.html)
 
 ```{r out.height= "70%"}
 library(tidycensus)
@@ -290,7 +314,7 @@ qtm(county_laea,fill=c("#8B1A1A"))
 ```
 
 
-## Coming back to the world
+## Coming back to the world - [**the `globe` package**](https://github.com/baddstats/globe)
 
 
 ```{r}
@@ -307,6 +331,15 @@ globeearth(eye=place("titanic"),col="royalblue")
 globeearth(eye=place("southpole"),col="royalblue")
 ```
 
+## End of section 1
+
+### Do you have questions?
+
+### Exercises 
+
+- Create a worldmap and colour code it with population per area
+- Create map of the life expectation in South America
+
 
 ## Section 2: Data sources and structures
 
@@ -319,6 +352,22 @@ library(sf)
 
 
 ![](pics/sf_sticky_people.jpg)
+
+
+## Spatial data structure before `sf`
+
+### Basic structure
+
+- There are variuos slots for different types of information
+- E.g. a slot for the definition of the polygones `wrld_simpl@polygons`
+- And another slot of the data behind `wrld_simpl@data` 
+
+### The data slot
+
+```{r}
+head(wrld_simpl@data)
+```
+
 
 
 
@@ -519,11 +568,78 @@ png("maps/map_challenge_day5.png")
 dev.off()
 ```
 
+
+
+## Load example data
+
+### Data source Eurostat
+
+- Data about unemployment in Europe
+
+```{r}
+url <- "https://raw.githubusercontent.com/Japhilko/
+GeoData/master/2015/data/Unemployment07a13.csv"
+
+Unemp <- read.csv(url) 
+```
+
+
+## Excursus: the command `match`
+
+### Create two example vectors
+
+```{r}
+vec_a <- c("A",2,6,1,"C")
+vec_b <- c(1,"C",2)
+```
+
+### Bringing the two vectors together
+
+- With the function `match` you can see which element of the first vector matches the second vector.
+
+```{r}
+match(vec_a,vec_b)
+```
+
+## End of section 2 
+
+### Do you have questions?
+
+
+### Exercise
+
+- Download data for e.g. NUTS2 regions in your country via GADM and plot it.
+- Download the Unemployment data and visualize the values for december 2007 and january 2013 in a map. 
+
+## Use the package `tmap` with your data
+
+```{r,warning=F}
+library("tmap")
+```
+
+### Match the data
+
+```{r}
+iso_a2<- substr(World$iso_a3,1,2)
+ind <- match(iso_a2,Unemp$GEO)
+World$Val2007M12 <- Unemp$Val2007M12[ind]
+World$Val2013M01 <- Unemp$Val2013M01[ind]
+```
+
+## Plot the map
+
+```{r}
+qtm(World,c("Val2007M12","Val2013M01"))
+```
+
+
+
+
 ## Section 3 - Openstreetmap data
 
 ![](pics/osm_logo.PNG)
 
-## Openstreetmap map features
+## [**Openstreetmap map features**](https://wiki.openstreetmap.org/wiki/Map_features)
 
 
 ### Information in the wiki
@@ -555,7 +671,7 @@ dev.off()
 ## [Longitude and Latitude](https://travellingacrosstime.com/2021/03/02/latitude-and-longitude/)
 
 ![](pics/definition-of-latitude-longitude.jpg)
-Source: [Traveling across time](https://travellingacrosstime.com/2021/03/02/latitude-and-longitude/)
+Source: [**Traveling across time**](https://travellingacrosstime.com/2021/03/02/latitude-and-longitude/)
 
 ## `tmaptools` - Thematic Map Tools 
 
@@ -563,7 +679,7 @@ Source: [Traveling across time](https://travellingacrosstime.com/2021/03/02/lati
 library(tmaptools)
 ```
 
-Author: Martijn Tennekes
+Author: [**Martijn Tennekes**](https://twitter.com/MartijnTennekes)
 
 ```{r,eval=F}
 citation("tmaptools")
@@ -620,65 +736,13 @@ ggmap(myMap)
 
 ![](pics/tonermap_zuri.PNG){width=50%}
 
+## End of section 3
 
+### Do you have questions?
 
-## Load example data
+### Exercise
 
-### Data source Eurostat
-
-- Data about unemployment in Europe
-
-```{r}
-url <- "https://raw.githubusercontent.com/Japhilko/
-GeoData/master/2015/data/Unemployment07a13.csv"
-
-Unemp <- read.csv(url) 
-```
-
-
-## Excursus: the command `match`
-
-### Create two example vectors
-
-```{r}
-vec_a <- c("A",2,6,1,"C")
-vec_b <- c(1,"C",2)
-```
-
-### Bringing the two vectors together
-
-- With the function `match` you can see which element of the first vector matches the second vector.
-
-```{r}
-match(vec_a,vec_b)
-```
-
-## Exercise 
-
-Download the Unemployment data and visualize it in a map. 
-
-## Use the package `tmap` with your data
-
-```{r,warning=F}
-library("tmap")
-```
-
-### Match the data
-
-```{r}
-iso_a2<- substr(World$iso_a3,1,2)
-ind <- match(iso_a2,Unemp$GEO)
-World$Val2007M12 <- Unemp$Val2007M12[ind]
-World$Val2013M01 <- Unemp$Val2013M01[ind]
-```
-
-## Plot a map
-
-```{r}
-qtm(World,c("Val2007M12","Val2013M01"))
-```
-
-
+- Create an interactive map with your points of interest
 
 
 ## Section 4: OSM maps with R
@@ -864,24 +928,18 @@ plot(elevation)
 ```
 
 
-## Mapping is fun
+## End of section 4
 
-![](pics/topitukjanov.PNG)
+### Do you have questions?
 
- 
-## [#30daymapchallenge](https://tjukanov.org/30daymapchallenge)
-
-![](pics/30daymapchallenge_copy_1jpg)
-
-[Github repo - #30daymapchallenge](https://github.com/tjukanovt/30DayMapChallenge)
-
-
-## Exercise: Create a monochrome map
+### Exercise: Create a monochrome map like this
 
 ![](pics/trier_monochrome.png)
 
 
+## [CRAN task view: **Analysis of spatial data**](https://cran.r-project.org/web/views/Spatial.html)
 
+![](pics/cran_taskview_spatial.PNG)
 
 
 ## Resources for packages
@@ -906,17 +964,17 @@ plot(elevation)
 - Vignette - [**Get started**](https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html) with `tmap` package
 
 
-### [`ggmap`]()
+### [`ggmap`](https://cran.r-project.org/web/packages/ggmap/index.html)
 
-- [Thinking spatially (German)](https://thinking-spatial.org/courses/angewandte_geodatenverarbeitung/kurs05/)
+- [**Thinking spatially** (German)](https://thinking-spatial.org/courses/angewandte_geodatenverarbeitung/kurs05/)
 
-- [`ggmap` und osmdata](http://joshuamccrain.com/tutorials/maps/streets_tutorial.html)
+- [**`ggmap`** and **`osmdata`**](http://joshuamccrain.com/tutorials/maps/streets_tutorial.html)
 
 ## More packages
 
 ### [`osmdata`]()
 
-- [Vignette](https://cran.r-project.org/web/packages/osmdata/vignettes/osmdata.html)
+- [**Vignette** for package `osmdata`](https://cran.r-project.org/web/packages/osmdata/vignettes/osmdata.html)
 
 ### [`choroplethr`](https://www.rdocumentation.org/packages/choroplethr/versions/3.7.0)
 
@@ -933,7 +991,7 @@ plot(elevation)
 
 ## Data sources
 
-### Examples for sources
+### Data sources
 
 - [Covid 19 datahub](https://covid19datahub.io/)
 
@@ -941,8 +999,16 @@ plot(elevation)
 
 - [Draught Monitor](https://droughtmonitor.unl.edu/Data/GISData.aspx)
 
+- datahub.io
+
+
+### Sources for Shapefiles
+
+- [Global Administrative Boundaries](https://gadm.org/data.html)
+
 ## Further resources
 
+- [**`rworldmap`**](https://journal.r-project.org/archive/2011-1/RJournal_2011-1_South.pdf): A New R package for Mapping Global Data
 - [Tips for working with images in Rmd files](http://zevross.com/blog/2017/06/19/tips-and-tricks-for-working-with-images-and-figures-in-r-markdown-documents/)
 
 ### [rspatial](rspatial.org)
@@ -967,3 +1033,18 @@ plot(elevation)
 ### Tips and tricks for R
 
 - [Colour palettes](https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-great-data-visualization/)
+
+
+
+## Mapping is fun
+
+![](pics/topitukjanov.PNG)
+
+ 
+## The end
+
+Thank you very much for your attention!
+
+If you have further questions please contact me:
+
+JanPhilipp.Kolb@gmail.com
